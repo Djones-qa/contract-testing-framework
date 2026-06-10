@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: stub-server
+  namespace: contract-testing
+  labels:
+    app: stub-server
+spec:
+  type: ClusterIP
+  selector:
+    app: stub-server
+  ports:
+    - port: 4001
+      targetPort: 4001
+      protocol: TCP

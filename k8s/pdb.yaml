@@ -1,0 +1,44 @@
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: contract-broker-pdb
+  namespace: contract-testing
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: contract-broker
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: stub-server-pdb
+  namespace: contract-testing
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: stub-server
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: verification-runner-pdb
+  namespace: contract-testing
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: verification-runner
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: webhook-service-pdb
+  namespace: contract-testing
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: webhook-service

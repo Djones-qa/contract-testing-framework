@@ -1,0 +1,104 @@
+---
+# Default deny all ingress traffic in the namespace
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: contract-testing
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+---
+# Allow Contract Broker to receive traffic from Verification Runner and Stub Server
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-to-contract-broker
+  namespace: contract-testing
+spec:
+  podSelector:
+    matchLabels:
+      app: contract-broker
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: verification-runner
+        - podSelector:
+            matchLabels:
+              app: stub-server
+      ports:
+        - protocol: TCP
+          port: 4000
+---
+# Allow PostgreSQL to receive traffic from Contract Broker
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-to-postgres
+  namespace: contract-testing
+spec:
+  podSelector:
+    matchLabels:
+      app: postgres
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: contract-broker
+      ports:
+        - protocol: TCP
+          port: 5432
+---
+# Allow Redis to receive traffic from Contract Broker, Stub Server, and Webhook Service
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-to-redis
+  namespace: contract-testing
+spec:
+  podSelector:
+    matchLabels:
+      app: redis
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: contract-broker
+        - podSelector:
+            matchLabels:
+              app: stub-server
+        - podSelector:
+            matchLabels:
+              app: webhook-service
+      ports:
+        - protocol: TCP
+          port: 6379
+---
+# Allow Verification Runner to receive traffic from Webhook Service
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-to-verification-runner
+  namespace: contract-testing
+spec:
+  podSelector:
+    matchLabels:
+      app: verification-runner
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: webhook-service
+      ports:
+        - protocol: TCP
+          port: 4002

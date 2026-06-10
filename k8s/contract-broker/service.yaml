@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: contract-broker
+  namespace: contract-testing
+  labels:
+    app: contract-broker
+spec:
+  type: ClusterIP
+  selector:
+    app: contract-broker
+  ports:
+    - port: 4000
+      targetPort: 4000
+      protocol: TCP

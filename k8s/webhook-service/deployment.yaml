@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webhook-service
+  namespace: contract-testing
+  labels:
+    app: webhook-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: webhook-service
+  template:
+    metadata:
+      labels:
+        app: webhook-service
+    spec:
+      serviceAccountName: webhook-service
+      containers:
+        - name: webhook-service
+          image: contract-testing/webhook-service:latest
+          env:
+            - name: REDIS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: contract-testing-config
+                  key: redis-url
+            - name: VERIFICATION_RUNNER_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: contract-testing-config
+                  key: verification-runner-url
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - "pgrep -f node || exit 1"
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            timeoutSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - "pgrep -f node || exit 1"
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5

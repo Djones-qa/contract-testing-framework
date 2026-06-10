@@ -1,0 +1,87 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: contract_user
+      POSTGRES_PASSWORD: contract_pass
+      POSTGRES_DB: contract_testing
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U contract_user -d contract_testing"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  contract-broker:
+    build:
+      context: .
+      dockerfile: services/contract-broker/Dockerfile
+    ports:
+      - "4000:4000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      PGHOST: postgres
+      PGDATABASE: contract_testing
+      PGUSER: contract_user
+      PGPASSWORD: contract_pass
+      REDIS_URL: redis://redis:6379
+
+  stub-server:
+    build:
+      context: .
+      dockerfile: services/stub-server/Dockerfile
+    ports:
+      - "4001:4001"
+    depends_on:
+      redis:
+        condition: service_healthy
+      contract-broker:
+        condition: service_started
+    environment:
+      REDIS_URL: redis://redis:6379
+      BROKER_URL: http://contract-broker:4000
+
+  verification-runner:
+    build:
+      context: .
+      dockerfile: services/verification-runner/Dockerfile
+    ports:
+      - "4002:4002"
+    depends_on:
+      contract-broker:
+        condition: service_started
+    environment:
+      BROKER_URL: http://contract-broker:4000
+
+  webhook-service:
+    build:
+      context: .
+      dockerfile: services/webhook-service/Dockerfile
+    depends_on:
+      redis:
+        condition: service_healthy
+      verification-runner:
+        condition: service_started
+    environment:
+      REDIS_URL: redis://redis:6379
+      VERIFICATION_RUNNER_URL: http://verification-runner:4002
+
+volumes:
+  postgres_data:

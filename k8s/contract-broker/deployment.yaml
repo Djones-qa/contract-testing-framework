@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: contract-broker
+  namespace: contract-testing
+  labels:
+    app: contract-broker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: contract-broker
+  template:
+    metadata:
+      labels:
+        app: contract-broker
+    spec:
+      serviceAccountName: contract-broker
+      containers:
+        - name: contract-broker
+          image: contract-testing/contract-broker:latest
+          ports:
+            - containerPort: 4000
+              protocol: TCP
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: contract-testing-secrets
+                  key: database-url
+            - name: REDIS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: contract-testing-config
+                  key: redis-url
+            - name: PORT
+              value: "4000"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 4000
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 4000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5

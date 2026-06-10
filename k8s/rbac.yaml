@@ -1,0 +1,140 @@
+---
+# ServiceAccount for Contract Broker
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: contract-broker
+  namespace: contract-testing
+  labels:
+    app: contract-broker
+---
+# Role for Contract Broker - minimal permissions for health checks
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: contract-broker-role
+  namespace: contract-testing
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+---
+# RoleBinding for Contract Broker
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: contract-broker-rolebinding
+  namespace: contract-testing
+subjects:
+  - kind: ServiceAccount
+    name: contract-broker
+    namespace: contract-testing
+roleRef:
+  kind: Role
+  name: contract-broker-role
+  apiGroup: rbac.authorization.k8s.io
+---
+# ServiceAccount for Stub Server
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: stub-server
+  namespace: contract-testing
+  labels:
+    app: stub-server
+---
+# Role for Stub Server - minimal permissions for health checks
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: stub-server-role
+  namespace: contract-testing
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+---
+# RoleBinding for Stub Server
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: stub-server-rolebinding
+  namespace: contract-testing
+subjects:
+  - kind: ServiceAccount
+    name: stub-server
+    namespace: contract-testing
+roleRef:
+  kind: Role
+  name: stub-server-role
+  apiGroup: rbac.authorization.k8s.io
+---
+# ServiceAccount for Verification Runner
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: verification-runner
+  namespace: contract-testing
+  labels:
+    app: verification-runner
+---
+# Role for Verification Runner - minimal permissions for health checks
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: verification-runner-role
+  namespace: contract-testing
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+---
+# RoleBinding for Verification Runner
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: verification-runner-rolebinding
+  namespace: contract-testing
+subjects:
+  - kind: ServiceAccount
+    name: verification-runner
+    namespace: contract-testing
+roleRef:
+  kind: Role
+  name: verification-runner-role
+  apiGroup: rbac.authorization.k8s.io
+---
+# ServiceAccount for Webhook Service
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: webhook-service
+  namespace: contract-testing
+  labels:
+    app: webhook-service
+---
+# Role for Webhook Service - minimal permissions for health checks
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: webhook-service-role
+  namespace: contract-testing
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+---
+# RoleBinding for Webhook Service
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: webhook-service-rolebinding
+  namespace: contract-testing
+subjects:
+  - kind: ServiceAccount
+    name: webhook-service
+    namespace: contract-testing
+roleRef:
+  kind: Role
+  name: webhook-service-role
+  apiGroup: rbac.authorization.k8s.io

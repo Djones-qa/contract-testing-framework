@@ -1,0 +1,14 @@
+node_modules
+**/node_modules
+**/dist
+.git
+.gitignore
+*.md
+.kiro
+.vscode
+coverage
+**/coverage
+**/*.test.ts
+**/*.spec.ts
+jest.config.base.ts
+**/jest.config.ts

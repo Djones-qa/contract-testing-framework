@@ -1,0 +1,29 @@
+{
+  "name": "@contract-testing/shared",
+  "version": "1.0.0",
+  "description": "Shared types, validation, and matching logic for the contract testing framework",
+  "author": "Darrius Jones",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest --run",
+    "typecheck": "tsc --noEmit",
+    "lint": "echo \"No linter configured yet\""
+  },
+  "dependencies": {
+    "jsonpath": "^1.1.1",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "typescript": "~5.3.3",
+    "@types/node": "^20.11.0",
+    "@types/jsonpath": "^0.2.4",
+    "@types/uuid": "^9.0.7",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "@types/jest": "^29.5.11",
+    "fast-check": "^3.15.0"
+  }
+}

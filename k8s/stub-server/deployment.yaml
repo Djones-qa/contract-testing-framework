@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stub-server
+  namespace: contract-testing
+  labels:
+    app: stub-server
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: stub-server
+  template:
+    metadata:
+      labels:
+        app: stub-server
+    spec:
+      serviceAccountName: stub-server
+      containers:
+        - name: stub-server
+          image: contract-testing/stub-server:latest
+          ports:
+            - containerPort: 4001
+              protocol: TCP
+          env:
+            - name: REDIS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: contract-testing-config
+                  key: redis-url
+            - name: CONTRACT_BROKER_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: contract-testing-config
+                  key: contract-broker-url
+            - name: PORT
+              value: "4001"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 4001
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 4001
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5

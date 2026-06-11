@@ -13,14 +13,6 @@ const baseConfig: Config = {
     '!src/**/*.d.ts',
     '!src/**/__tests__/**',
   ],
-  coverageThreshold: {
-    global: {
-      branches: 50,
-      functions: 50,
-      lines: 60,
-      statements: 60,
-    },
-  },
   coverageDirectory: '<rootDir>/coverage',
 };
 

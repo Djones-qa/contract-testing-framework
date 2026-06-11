@@ -8,7 +8,7 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "jest --run",
+    "test": "jest",
     "typecheck": "tsc --noEmit",
     "lint": "echo \"No linter configured yet\""
   },

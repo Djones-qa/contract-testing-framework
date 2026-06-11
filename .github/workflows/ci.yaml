@@ -61,7 +61,7 @@ jobs:
         run: pnpm --filter @contract-testing/shared run build
 
       - name: Run tests with coverage
-        run: pnpm -r run test -- --coverage
+        run: pnpm -r run test
 
       - name: Upload coverage artifacts
         uses: actions/upload-artifact@v4

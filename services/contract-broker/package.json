@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/app.js",
-    "test": "jest",
+    "test": "jest --coverage",
     "typecheck": "tsc --noEmit",
     "lint": "echo \"No linter configured yet\""
   },
